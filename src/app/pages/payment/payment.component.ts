@@ -425,8 +425,16 @@ export class PaymentComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     private getAllInvoice(id_pelanggan: string, is_set?: boolean, id_invoice?: number) {
+        let queries: any = {
+            id_pelanggan: id_pelanggan
+        };
+
+        if (id_invoice) {
+            queries.d_invoice = id_invoice;
+        }
+
         this._invoiceService
-            .getAll({ id_pelanggan: id_pelanggan, id_invoice: id_invoice })
+            .getAll(queries)
             .pipe(takeUntil(this.Destroy$))
             .subscribe((result) => {
                 if (result) {
