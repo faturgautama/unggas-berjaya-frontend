@@ -86,7 +86,6 @@ export class PelangganComponent implements OnInit, OnDestroy {
             { field: 'bayar', headerName: 'Bayar', format: 'currency', class: 'text-end text-xs', width: '150px' },
             { field: 'invoice_status', headerName: 'Status', class: 'text-center text-xs', width: '100px' },
             { field: 'is_cash', headerName: 'Apakah Cash?', class: 'text-center text-xs', width: '100px', format: 'icon_boolean' },
-            { field: 'payment_date', headerName: 'Tgl. Bayar', class: 'text-xs', format: 'datetime', width: '200px' },
         ],
         dataSource: [],
         height: "calc(100vh - 14.5rem)",

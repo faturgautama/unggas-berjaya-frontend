@@ -4,8 +4,8 @@
 
 export const environment = {
     production: false,
-    webApiUrl: 'https://ubapi.fgdevstudio.web.id/api/v1',
-    socketUrl: 'https://ubapi.fgdevstudio.web.id',
+    webApiUrl: 'http://localhost:3058/api/v1',
+    socketUrl: 'http://localhost:3058',
     checkoutUrl: 'https://checkout.linkbit.net.id',
     version: 'v0.2.3-alpha',
 };

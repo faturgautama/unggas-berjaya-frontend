@@ -123,9 +123,10 @@ export class PaymentComponent implements OnInit, AfterViewInit, OnDestroy {
             { field: 'alamat', headerName: 'Alamat', class: 'text-xs', width: '200px' },
             { field: 'payment_date', headerName: 'Tgl. Bayar', format: 'datetime', class: 'text-xs', width: '150px' },
             { field: 'payment_method', headerName: 'Metode Bayar', class: 'text-xs', width: '150px' },
-            { field: 'payment_amount', headerName: 'Total', format: 'currency', class: 'text-start text-xs', width: '150px' },
+            { field: 'payment_amount', headerName: 'Total Invoice', format: 'currency', class: 'text-start text-xs', width: '150px' },
+            { field: 'total_terbayar_sebelumnya', headerName: 'Sudah Terbayar', format: 'currency', class: 'text-start text-xs', width: '150px' },
             { field: 'potongan', headerName: 'Potongan', format: 'currency', class: 'text-start text-xs', width: '150px' },
-            { field: 'total', headerName: 'Grand Total', format: 'currency', class: 'text-start text-xs', width: '150px' },
+            { field: 'total', headerName: 'Bayar', format: 'currency', class: 'text-start text-xs', width: '150px' },
         ],
         dataSource: [],
         height: "calc(100vh - 14.5rem)",
@@ -148,7 +149,14 @@ export class PaymentComponent implements OnInit, AfterViewInit, OnDestroy {
                 type: 'text'
             },
         ],
-        defaultRows: 50
+        defaultRows: 5,
+        paginationInfo: {
+            page: 1,
+            limit: 5,
+            total: 0,
+            total_pages: 0,
+            first: 0
+        },
     };
     GridSelectedData: any;
     GridQueryParams: any;
@@ -170,7 +178,7 @@ export class PaymentComponent implements OnInit, AfterViewInit, OnDestroy {
         ],
         dataSource: [],
         height: "calc(100vh - 24rem)",
-        showPaging: false,
+        showPaging: true,
         showSearch: false,
         showSort: false,
         defaultRows: 50,
@@ -179,6 +187,9 @@ export class PaymentComponent implements OnInit, AfterViewInit, OnDestroy {
     };
 
     Notes = "";
+    TotalQty = 0;
+    TotalBerat = 0;
+    SudahTerbayar = 0;
     PaymentAmount = 0;
     Potongan = 0;
     Total = 0;
@@ -255,6 +266,7 @@ export class PaymentComponent implements OnInit, AfterViewInit, OnDestroy {
                             };
                             this.FormComps.FormGroup.patchValue(payload);
                             this.getByIdInvoice(args.id_invoice);
+                            this.SudahTerbayar = args.sudah_terbayar;
                             this.PaymentAmount = args.total;
                             this.Potongan = 0;
                             this.Total = args.total;
@@ -325,7 +337,7 @@ export class PaymentComponent implements OnInit, AfterViewInit, OnDestroy {
             },
         ]
 
-        this.getAll({ payment_date: this._utilityService.onFormatDate(new Date(), 'yyyy-MM-DD') });
+        this.getAll({ page: 1, limit: 5, payment_date: this._utilityService.onFormatDate(new Date(), 'yyyy-MM-DD') });
         this.getAllPelanggan({ is_active: true });
     }
 
@@ -400,8 +412,13 @@ export class PaymentComponent implements OnInit, AfterViewInit, OnDestroy {
         this._paymentService
             .getAll(query)
             .pipe(takeUntil(this.Destroy$))
-            .subscribe((result) => {
+            .subscribe((result: any) => {
                 if (result) {
+                    this.GridProps.paginationInfo = {
+                        ...result.meta,
+                        first: (result.meta.page - 1) * result.meta.limit
+                    };
+
                     this.GridProps.dataSource = result.data.map((item: any) => {
                         return {
                             ...item,
@@ -459,7 +476,7 @@ export class PaymentComponent implements OnInit, AfterViewInit, OnDestroy {
                                 this.FormProps.fields[index].readonly = false;
                                 this.PaymentAmount = invoice ? invoice.total : 0;
                                 this.Potongan = 0;
-                                this.Total = invoice ? invoice.total : 0;
+                                this.Total = invoice ? (this.PaymentAmount - this.SudahTerbayar) : 0;
                             };
                         }, 1000);
                     }
@@ -473,6 +490,9 @@ export class PaymentComponent implements OnInit, AfterViewInit, OnDestroy {
             .pipe(takeUntil(this.Destroy$))
             .subscribe((result: any) => {
                 if (result.status) {
+                    this.SudahTerbayar = result.data.sudah_terbayar;
+                    this.TotalBerat = result.data.total_berat;
+                    this.TotalQty = result.data.total_qty;
                     this.GridDetailProps.dataSource = result.data.detail;
                 }
             })
@@ -481,6 +501,14 @@ export class PaymentComponent implements OnInit, AfterViewInit, OnDestroy {
     onSearchGrid(args: any) {
         this.getAll(args);
     }
+
+    onPageChanged(args: any) {
+        this.GridQueryParams.page = args.page;
+        this.GridQueryParams.limit = args.limit;
+
+        this.getAll(this.GridQueryParams);
+    }
+
 
     handleClickButtonNavigation(data: LayoutModel.IButtonNavigation) {
         if (data.id == 'add') {
