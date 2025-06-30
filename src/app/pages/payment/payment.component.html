@@ -1,0 +1,120 @@
+<app-dashboard [ButtonNavigation]="ButtonNavigation" (onClickButtonNavigation)="handleClickButtonNavigation($event)">
+    <!-- Grid -->
+    <div *ngIf="PageState == 'list'" class="grid w-full bg-white rounded-lg shadow-sm p-2">
+        <div
+            class="flex flex-row justify-between items-start w-full mb-2 pb-2 border-b border-t-0 border-x-0 border-dashed border-gray-300">
+            <div class="flex w-full gap-3">
+                <app-panel-filter [props]="AdvancedFilterProps" [formClass]="'grid-rows-3 grid-cols-3'"
+                    (onFilter)="handleFilterGridPayment($event)">
+                </app-panel-filter>
+            </div>
+
+            <div class="flex w-8/12 justify-end gap-2">
+                <div class="flex w-8/12">
+                    <input #SearchEl type="text" pInputText placeholder="Cari data disini" class="p-inputtext-sm w-full"
+                        (keyup.enter)="handleSearchGridPayment(SearchEl.value)">
+                </div>
+
+                <p-button severity="info" label="Cari" icon="pi pi-search" styleClass="p-button-sm"
+                    (onClick)="handleSearchGridPayment(SearchEl.value)">
+                </p-button>
+
+                <p-button severity="secondary" label="Export" icon="pi pi-download" styleClass="p-button-sm"
+                    (onClick)="handleExportGridPayment()">
+                </p-button>
+            </div>
+        </div>
+
+        <app-grid #GridComps [props]="GridProps" (cellClicked)="onCellClicked($event)"
+            (rowDoubleClicked)="onRowDoubleClicked($event)" (aksiClicked)="onToolbarClicked($event)"
+            (customSearchClicked)="onSearchGrid($event)">
+        </app-grid>
+    </div>
+
+    <!-- Form -->
+    <div *ngIf="PageState == 'form'" class="flex flex-col w-full p-3 bg-white rounded-lg shadow-sm">
+        <div class="grid w-full">
+            <app-dynamic-form #FormComps [props]="FormProps"></app-dynamic-form>
+
+            <div class="grid w-full gap-0 mt-3 mb-4 pt-3 border-t border-b-0 border-x-0 border-dashed border-gray-300">
+                <div class="flex flex-col gap-0 mb-2">
+                    <p class="text-base font-semibold text-gray-700">
+                        Detail Penjualan
+                    </p>
+                    <p class="text-sm text-gray-600">
+                        Detail barang pada faktur penjualan ini
+                    </p>
+                </div>
+
+                <app-grid #GridDetailComps [props]="GridDetailProps"></app-grid>
+            </div>
+
+            <div class="flex justify-between w-full gap-2">
+                <div class="flex flex-col w-3/12 gap-1">
+                    <p class="text-sm text-gray-700 font-medium">
+                        Catatan / Keterangan
+                    </p>
+                    <textarea rows="5" pInputTextarea styleClass="p-inputtext-sm w-full" [(ngModel)]="Notes"></textarea>
+                </div>
+
+                <div class="flex flex-col w-4/12 gap-3">
+                    <!-- Total Penjualan -->
+                    <div class="flex flex-row items-center gap-2 w-full">
+                        <div class="w-4/12">
+                            <p class="text-sm text-gray-700 font-medium">
+                                Total
+                            </p>
+                        </div>
+                        <div class="w-8/12">
+                            <p-inputNumber [(ngModel)]="PaymentAmount" styleClass="p-inputtext-sm w-full"
+                                [disabled]="true">
+                            </p-inputNumber>
+                        </div>
+                    </div>
+
+                    <!-- Potongan -->
+                    <div class="flex flex-row items-center gap-2 w-full">
+                        <div class="w-4/12">
+                            <p class="text-sm text-gray-700 font-medium">
+                                Potongan
+                            </p>
+                        </div>
+                        <div class="w-8/12">
+                            <p-inputNumber [(ngModel)]="Potongan" styleClass="p-inputtext-sm w-full"
+                                (ngModelChange)="handleCountGrandTotal($event)" mode="decimal" [maxFractionDigits]="2">
+                            </p-inputNumber>
+                        </div>
+                    </div>
+
+                    <!-- Potongan -->
+                    <div class="flex flex-row items-center gap-2 w-full">
+                        <div class="w-4/12">
+                            <p class="text-sm text-gray-700 font-medium">
+                                Grand Total
+                            </p>
+                        </div>
+                        <div class="w-8/12">
+                            <p-inputNumber [(ngModel)]="Total" styleClass="p-inputtext-sm w-full" [disabled]="true">
+                            </p-inputNumber>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="flex w-full justify-end mt-4 gap-4">
+            <p-button severity="secondary" label="Back" styleClass="p-button-sm" (onClick)="handleBackToList()">
+            </p-button>
+
+            <p-button *ngIf="FormState == 'insert'" severity="info" label="Save" styleClass="p-button-sm"
+                (onClick)="saveData(FormComps.FormGroup.value)">
+            </p-button>
+
+            <p-button *ngIf="FormState == 'update'" severity="warning" label="Update" styleClass="p-button-sm"
+                (onClick)="updateData(FormComps.FormGroup.value)">
+            </p-button>
+        </div>
+    </div>
+
+    <p-confirmDialog />
+</app-dashboard>

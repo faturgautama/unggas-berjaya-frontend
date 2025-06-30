@@ -1,0 +1,74 @@
+<app-dashboard [ButtonNavigation]="ButtonNavigation" (onClickButtonNavigation)="handleClickButtonNavigation($event)">
+    <!-- Grid -->
+    <div *ngIf="PageState == 'list'" class="grid w-full bg-white rounded-lg shadow-sm p-2">
+        <div
+            class="flex flex-row justify-end items-end w-full mb-2 pb-2 border-b border-t-0 border-x-0 border-dashed border-gray-300">
+            <div class="flex w-6/12 gap-2 justify-end">
+                <div class="flex w-8/12">
+                    <input #SearchEl type="text" pInputText placeholder="Cari data disini" class="p-inputtext-sm w-full"
+                        (keyup.enter)="handleSearchGridPelanggan(SearchEl.value)">
+                </div>
+
+                <p-button severity="info" label="Cari" icon="pi pi-search" styleClass="p-button-sm"
+                    (onClick)="handleSearchGridPelanggan(SearchEl.value)">
+                </p-button>
+
+                <p-button severity="secondary" label="Export" icon="pi pi-download" styleClass="p-button-sm"
+                    (onClick)="handleExportGridPelanggan()">
+                </p-button>
+            </div>
+        </div>
+
+        <app-grid #GridPelangganComps [props]="GridProps" (cellClicked)="onCellClicked($event)"
+            (rowDoubleClicked)="onRowDoubleClicked($event)" (aksiClicked)="onToolbarClicked($event)"
+            (customSearchClicked)="onSearchGrid($event)" (pageChanged)="onPageChanged($event)">
+        </app-grid>
+    </div>
+
+    <!-- Form -->
+    <div *ngIf="PageState == 'form'" class="flex flex-col w-full gap-3">
+        <div class="grid w-full p-3 bg-white rounded-lg shadow-sm">
+            <app-dynamic-form #FormComps [props]="FormProps"></app-dynamic-form>
+
+            <div class="flex w-full justify-end mt-4 gap-4">
+                <p-button severity="secondary" label="Back" styleClass="p-button-sm" (onClick)="handleBackToList()">
+                </p-button>
+
+                <p-button *ngIf="FormState == 'insert'" severity="info" label="Save" styleClass="p-button-sm text-white"
+                    (onClick)="saveData(FormComps.FormGroup.value)">
+                </p-button>
+
+                <p-button *ngIf="FormState == 'update'" severity="warning" label="Update" styleClass="p-button-sm"
+                    (onClick)="updateData(FormComps.FormGroup.value)">
+                </p-button>
+            </div>
+        </div>
+
+        <div *ngIf="FormState == 'update'" class="grid w-full bg-white rounded-lg shadow-sm p-3">
+            <div
+                class="flex flex-row justify-between items-center mb-3 pb-3 border-b border-t-0 border-x-0 border-dashed border-gray-300">
+                <div class="flex flex-col">
+                    <p class="text-base font-medium text-gray-700">
+                        History Penjualan
+                    </p>
+                    <p class="text-xs text-gray-600 ">
+                        Riwayat penjualan pelanggan
+                    </p>
+                </div>
+
+                <div class="flex gap-2">
+                    <p-button severity="secondary" label="Export" styleClass="p-button-sm"
+                        (onClick)="handleExportHistoryTagihan()">
+                    </p-button>
+                </div>
+            </div>
+
+            <app-grid #GridHistoryTagihanComps [props]="GridHistoryTagihanProps"
+                (aksiClicked)="onToolbarClickedHistoryInvoice($event)"
+                (pageChanged)="onPageChangedHistoryInvoice($event)">
+            </app-grid>
+        </div>
+    </div>
+
+    <p-confirmDialog />
+</app-dashboard>

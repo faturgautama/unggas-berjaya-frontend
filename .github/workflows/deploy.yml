@@ -1,0 +1,40 @@
+name: Deploy Dashboard
+
+on:
+  push:
+    tags:
+      - "v*-alpha"
+      - "v*-prod"
+
+jobs:
+  deploy-staging:
+    if: endsWith(github.ref, '-alpha')
+    runs-on: ubuntu-latest
+    steps:
+      - name: 🔄 Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: 🚀 Deploy to Staging Server
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          password: ${{ secrets.PASSWORD }}
+          port: ${{ secrets.PORT }}
+          script: /home/billing-system-fg-linkbit/deployer/dashboard-staging-deployer.sh
+
+  deploy-production:
+    if: endsWith(github.ref, '-prod')
+    runs-on: ubuntu-latest
+    steps:
+      - name: 🔄 Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: 🚀 Deploy to Production Server
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          password: ${{ secrets.PASSWORD }}
+          port: ${{ secrets.PORT }}
+          script: /home/billing-system-fg-linkbit/deployer/dashboard-prod-deployer.sh

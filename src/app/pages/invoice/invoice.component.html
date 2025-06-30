@@ -1,0 +1,64 @@
+<app-dashboard [ButtonNavigation]="ButtonNavigation" (onClickButtonNavigation)="handleClickButtonNavigation($event)">
+    <!-- Grid -->
+    <div *ngIf="PageState == 'list'" class="grid w-full bg-white rounded-lg shadow-sm p-2">
+        <div
+            class="flex flex-row justify-between items-start w-full mb-2 pb-2 border-b border-t-0 border-x-0 border-dashed border-gray-300">
+            <div class="flex w-full gap-3">
+                <app-panel-filter [props]="AdvancedFilterProps" [formClass]="'grid-rows-2 grid-cols-2'"
+                    (onFilter)="handleFilterGridInvoice($event)">
+                </app-panel-filter>
+            </div>
+
+            <div class="flex w-8/12 justify-end gap-2">
+                <div class="flex w-8/12">
+                    <input #SearchEl type="text" pInputText placeholder="Cari data disini" class="p-inputtext-sm w-full"
+                        (keyup.enter)="handleSearchGridInvoice(SearchEl.value)">
+                </div>
+
+                <p-button severity="info" label="Cari" icon="pi pi-search" styleClass="p-button-sm"
+                    (onClick)="handleSearchGridInvoice(SearchEl.value)">
+                </p-button>
+
+                <p-button severity="secondary" label="Export" icon="pi pi-download" styleClass="p-button-sm"
+                    (onClick)="handleExportGridInvoice()">
+                </p-button>
+            </div>
+        </div>
+
+        <app-grid #GridComps [props]="GridProps" (cellClicked)="onCellClicked($event)"
+            (rowDoubleClicked)="onRowDoubleClicked($event)" (aksiClicked)="onToolbarClicked($event)"
+            (customSearchClicked)="onSearchGrid($event)" (pageChanged)="onPageChanged($event)">
+        </app-grid>
+    </div>
+
+    <!-- Form -->
+    <div *ngIf="PageState == 'form'" class="flex flex-col w-full p-3 bg-white rounded-lg shadow-sm">
+        <div class="grid w-full gap-5">
+            <app-dynamic-form #FormComps [props]="FormProps"></app-dynamic-form>
+
+            <app-grid #GridDetailComps [props]="GridDetailProps">
+            </app-grid>
+
+            <div class="flex w-full justify-end">
+                <div class="flex w-4/12 gap-4 items-center">
+                    <div class="w-4/12">
+                        <p class="text-sm text-gray-700 font-medium text-end">
+                            Grand Total
+                        </p>
+                    </div>
+                    <div class="w-8/12">
+                        <input type="text" pInputText [value]="GrandTotal | currency: 'Rp. '"
+                            class="p-inputtext-sm w-full text-end" disabled>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="flex w-full justify-end mt-4 gap-4">
+            <p-button severity="secondary" label="Back" styleClass="p-button-sm" (onClick)="handleBackToList()">
+            </p-button>
+        </div>
+    </div>
+
+    <p-confirmDialog />
+</app-dashboard>
