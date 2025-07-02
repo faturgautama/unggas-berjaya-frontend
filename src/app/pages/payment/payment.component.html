@@ -58,7 +58,7 @@
                 </div>
 
                 <div class="flex flex-col w-4/12 gap-3">
-                    <!-- Total Penjualan -->
+                    <!-- Sudah Terbayar -->
                     <div class="flex flex-row items-center gap-2 w-full">
                         <div class="w-5/12">
                             <p class="text-sm text-gray-700 font-medium">
@@ -99,7 +99,7 @@
                         </div>
                     </div>
 
-                    <!-- Total Penjualan -->
+                    <!-- Total Nota -->
                     <div class="flex flex-row items-center gap-2 w-full">
                         <div class="w-5/12">
                             <p class="text-sm text-gray-700 font-medium">
@@ -109,6 +109,20 @@
                         <div class="w-7/12">
                             <p-inputNumber [(ngModel)]="PaymentAmount" styleClass="p-inputtext-sm w-full"
                                 [disabled]="true">
+                            </p-inputNumber>
+                        </div>
+                    </div>
+
+                    <!-- Bayar -->
+                    <div class="flex flex-row items-center gap-2 w-full">
+                        <div class="w-5/12">
+                            <p class="text-sm text-gray-700 font-medium">
+                                Bayar
+                            </p>
+                        </div>
+                        <div class="w-7/12">
+                            <p-inputNumber [(ngModel)]="Total" styleClass="p-inputtext-sm w-full" mode="decimal"
+                                [maxFractionDigits]="2" (ngModelChange)="handleCountGrandTotal($event)">
                             </p-inputNumber>
                         </div>
                     </div>
@@ -135,7 +149,8 @@
                             </p>
                         </div>
                         <div class="w-7/12">
-                            <p-inputNumber [(ngModel)]="Total" styleClass="p-inputtext-sm w-full">
+                            <p-inputNumber [(ngModel)]="SisaPiutang" styleClass="p-inputtext-sm w-full" mode="decimal"
+                                [maxFractionDigits]="2" [disabled]="true">
                             </p-inputNumber>
                         </div>
                     </div>

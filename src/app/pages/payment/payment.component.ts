@@ -123,10 +123,10 @@ export class PaymentComponent implements OnInit, AfterViewInit, OnDestroy {
             { field: 'alamat', headerName: 'Alamat', class: 'text-xs', width: '200px' },
             { field: 'payment_date', headerName: 'Tgl. Bayar', format: 'datetime', class: 'text-xs', width: '150px' },
             { field: 'payment_method', headerName: 'Metode Bayar', class: 'text-xs', width: '150px' },
-            { field: 'payment_amount', headerName: 'Total Invoice', format: 'currency', class: 'text-start text-xs', width: '150px' },
-            { field: 'total_terbayar_sebelumnya', headerName: 'Sudah Terbayar', format: 'currency', class: 'text-start text-xs', width: '150px' },
+            { field: 'payment_amount', headerName: 'Total Nota', format: 'currency', class: 'text-start text-xs', width: '150px' },
             { field: 'potongan', headerName: 'Potongan', format: 'currency', class: 'text-start text-xs', width: '150px' },
             { field: 'total', headerName: 'Bayar', format: 'currency', class: 'text-start text-xs', width: '150px' },
+            { field: 'sisa_piutang', headerName: 'Sisa Piutang', format: 'currency', class: 'text-start text-xs', width: '150px' },
         ],
         dataSource: [],
         height: "calc(100vh - 14.5rem)",
@@ -191,8 +191,9 @@ export class PaymentComponent implements OnInit, AfterViewInit, OnDestroy {
     TotalBerat = 0;
     SudahTerbayar = 0;
     PaymentAmount = 0;
-    Potongan = 0;
     Total = 0;
+    Potongan = 0;
+    SisaPiutang = 0;
 
     constructor(
         private _router: Router,
@@ -422,7 +423,8 @@ export class PaymentComponent implements OnInit, AfterViewInit, OnDestroy {
                     this.GridProps.dataSource = result.data.map((item: any) => {
                         return {
                             ...item,
-                            invoice_date: this._utilityService.onFormatDate(new Date(item.invoice_date), 'DD MMMM yyyy')
+                            invoice_date: this._utilityService.onFormatDate(new Date(item.invoice_date), 'DD MMMM yyyy'),
+                            sisa_piutang: item.payment_amount - item.total
                         }
                     });
                 }
@@ -509,7 +511,6 @@ export class PaymentComponent implements OnInit, AfterViewInit, OnDestroy {
         this.getAll(this.GridQueryParams);
     }
 
-
     handleClickButtonNavigation(data: LayoutModel.IButtonNavigation) {
         if (data.id == 'add') {
             this.PageState = 'form';
@@ -554,7 +555,8 @@ export class PaymentComponent implements OnInit, AfterViewInit, OnDestroy {
 
             this.PaymentAmount = args.payment_amount;
             this.Potongan = args.potongan;
-            this.Total = args.total;
+            this.Total = args.payment_amount - args.total;
+            this.SisaPiutang = args.sisa_piutang;
             this.Notes = args.notes;
 
             const index = this.FormProps.fields.findIndex(item => item.id == 'id_invoice');
@@ -605,7 +607,7 @@ export class PaymentComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     handleCountGrandTotal(args: number) {
-        this.Total = parseFloat((this.PaymentAmount - args) as any);
+        this.SisaPiutang = (parseFloat(this.PaymentAmount as any) - parseFloat(this.SudahTerbayar as any)) - parseFloat(this.Total as any) - this.Potongan;
     }
 
     saveData(data: any) {
