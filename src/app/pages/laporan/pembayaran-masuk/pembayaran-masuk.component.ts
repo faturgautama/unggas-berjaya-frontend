@@ -37,7 +37,7 @@ export class PembayaranMasukComponent implements OnInit, OnDestroy {
             { field: 'payment_number', headerName: 'No. Faktur', class: 'font-semibold text-sky-500 text-xs' },
             { field: 'invoice_number', headerName: 'No. Penjualan', class: 'text-xs' },
             { field: 'full_name', headerName: 'Pelanggan', class: 'text-xs' },
-            { field: 'payment_date', headerName: 'Tgl. Pembayaran', class: 'text-xs', format: 'currency' },
+            { field: 'payment_date', headerName: 'Tgl. Pembayaran', class: 'text-xs', format: 'datetime' },
             { field: 'payment_amount', headerName: 'Total Bayar', class: 'text-xs', format: 'currency' },
             { field: 'payment_method', headerName: 'Metode Bayar', class: 'text-xs' },
         ],

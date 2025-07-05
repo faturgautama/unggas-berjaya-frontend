@@ -424,7 +424,7 @@ export class PaymentComponent implements OnInit, AfterViewInit, OnDestroy {
                         return {
                             ...item,
                             invoice_date: this._utilityService.onFormatDate(new Date(item.invoice_date), 'DD MMMM yyyy'),
-                            sisa_piutang: item.payment_amount - item.total
+                            sisa_piutang: item.payment_amount - item.potongan - item.total
                         }
                     });
                 }
@@ -522,6 +522,15 @@ export class PaymentComponent implements OnInit, AfterViewInit, OnDestroy {
         if (this.FromPelanggan) {
             this._router.navigateByUrl(`/pelanggan?id_pelanggan=${this.QueryParams.id_pelanggan || this.FormComps.FormGroup.get('id_pelanggan')?.value}`);
         } else {
+            this.Notes = "";
+            this.TotalQty = 0;
+            this.TotalBerat = 0;
+            this.SudahTerbayar = 0;
+            this.PaymentAmount = 0;
+            this.Total = 0;
+            this.Potongan = 0;
+            this.SisaPiutang = 0;
+
             setTimeout(() => {
                 this.PageState = 'list';
                 this.FormState = 'insert';
