@@ -97,7 +97,7 @@ export class InvoiceComponent implements OnInit, AfterViewInit, OnDestroy {
             { field: 'invoice_date', headerName: 'Tgl. Penjualan', class: 'text-xs', width: '150px' },
             { field: 'full_name', headerName: 'Pelanggan', class: 'text-xs', width: '300px' },
             { field: 'total', headerName: 'Sub Total', format: 'currency', class: 'text-xs', width: '150px' },
-            { field: 'bayar', headerName: 'Bayar', format: 'currency', class: 'text-xs', width: '150px' },
+            { field: 'sudah_terbayar', headerName: 'Bayar', format: 'currency', class: 'text-xs', width: '150px' },
             { field: 'invoice_status', headerName: 'Status', class: 'text-xs', width: '100px' },
             { field: 'is_cash', headerName: 'Apakah Cash?', class: 'text-center text-xs', width: '100px', format: 'icon_boolean' },
         ],
