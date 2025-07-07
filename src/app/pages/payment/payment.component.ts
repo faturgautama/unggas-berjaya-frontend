@@ -253,7 +253,7 @@ export class PaymentComponent implements OnInit, AfterViewInit, OnDestroy {
                         customField: {
                             title: 'invoice_number',
                             subtitle: 'invoice_status',
-                            description: 'total'
+                            description: 'total_formatted'
                         }
                     },
                     onChange: (args: any) => {
@@ -460,7 +460,13 @@ export class PaymentComponent implements OnInit, AfterViewInit, OnDestroy {
             .subscribe((result) => {
                 if (result) {
                     const index = this.FormProps.fields.findIndex(item => item.id == 'id_invoice');
-                    this.FormProps.fields[index].dropdownProps.options = result.data;
+                    this.FormProps.fields[index].dropdownProps.options = result.data
+                        .map((item: any) => {
+                            return {
+                                ...item,
+                                total_formatted: formatCurrency(item.total, 'EN', 'Rp. ')
+                            }
+                        }).filter(item => item.invoice_status != 'LUNAS')
 
                     if (is_set) {
                         setTimeout(() => {
