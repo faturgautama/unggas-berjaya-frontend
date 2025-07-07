@@ -252,8 +252,8 @@ export class PaymentComponent implements OnInit, AfterViewInit, OnDestroy {
                         optionValue: 'id_invoice',
                         customField: {
                             title: 'invoice_number',
-                            subtitle: 'product_name',
-                            description: 'notes'
+                            subtitle: 'invoice_status',
+                            description: 'total'
                         }
                     },
                     onChange: (args: any) => {
@@ -445,7 +445,9 @@ export class PaymentComponent implements OnInit, AfterViewInit, OnDestroy {
 
     private getAllInvoice(id_pelanggan: string, is_set?: boolean, id_invoice?: number) {
         let queries: any = {
-            id_pelanggan: id_pelanggan
+            id_pelanggan: id_pelanggan,
+            page: 1,
+            limit: 250
         };
 
         if (id_invoice) {
